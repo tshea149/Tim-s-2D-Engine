@@ -31,11 +31,11 @@
 *.out
 *.app
 
-# Folders
-.vs/
-Debug/
-logs/
-music/
-Release/
-sound/
-textures/
+# Directories
+/.vs/
+/Debug/
+/logs/
+/music/
+/Release/
+/sound/
+/textures/
