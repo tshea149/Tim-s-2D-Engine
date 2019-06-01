@@ -32,10 +32,10 @@
 *.app
 
 # Directories
-.vs/**
-Debug/**
-logs/**
-music/**
-Release/**
-sound/**
-textures/**
+/.vs/**
+/Debug/**
+/logs/**
+/music/**
+/Release/**
+/sound/**
+/textures/**
