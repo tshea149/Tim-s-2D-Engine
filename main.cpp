@@ -8,7 +8,7 @@
 #include "Game.h"
 
 // Testing files
-#include "Testing.h"
+#include "test/Testing.h"
 
 #if _DEBUG
 #include "Debug.h"
