@@ -29,28 +29,6 @@ std::shared_ptr<sf::Texture> TextureManager::loadTexture(std::string filepath)
 		return iter->second.lock();
 }
 
-//bool TextureManager::unloadTexture(std::string filepath)
-//{
-//	// check map for texture ptr
-//	//	\ if present and ref count is 1, then the only item using it is the map, and it can be removed from the map (and therefore deallocated)
-//	std::unordered_map<std::string, std::shared_ptr<sf::Texture>>::iterator iter = texture_map.find("filepath");
-//	if (texture_map.end() == iter)
-//		return false;	// texture not in map
-//
-//	else
-//	{
-//		// iter->second is the shared pointer to the texture (first is key, second is value)
-//		if (iter->second.use_count() == 1)
-//		{
-//			// only the map has ownership of the texture, it can be deallocated
-//			texture_map.erase(iter);
-//			return true;
-//		}
-//		else
-//			return false;	// something else has ownership of the texture, it will not be removed
-//	}
-//}
-
 void TextureManager::TextureDeleter::operator()(sf::Texture* p_tex)
 {
 	// delete the texture data
