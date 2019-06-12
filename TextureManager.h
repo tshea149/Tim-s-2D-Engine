@@ -18,26 +18,20 @@ private:
 
 	std::shared_ptr<ResourceManager> const p_resource_manager;
 
-	struct TextureCacheEntry
-	{
-		// stored filename for finding the texture inside the texture_cache
-		std::string filepath;
-		std::weak_ptr<sf::Texture> p_tex;
-	};
+	std::weak_ptr<sf::Texture> p_tex;
 
+	// function object to use as custom deletor for weak_ptr<sf::Texture> in TextureCacheEntry
 	// deletes the pointer to texture data and removes the corresponding TextureCacheEntry from the texture_cache
 	struct TextureDeleter
 	{
-		TextureDeleter(TextureManager* _p_texture_manager, std::string _filepath) : p_texture_manager(_p_texture_manager), filepath(_filepath) {};
+		TextureDeleter(std::unordered_map<std::string, std::weak_ptr<sf::Texture>>* _p_texture_cache, std::string _filepath) : p_texture_cache(_p_texture_cache), filepath(_filepath) {};
 		void operator()(sf::Texture*);
-		TextureManager* p_texture_manager;
+		std::unordered_map<std::string, std::weak_ptr<sf::Texture>>* p_texture_cache;
 		std::string filepath;
 	};
 
-	void removeTextureCacheEntry(std::string filepath);
-
 	// Key filepath, value texture
-	std::unordered_map<std::string, TextureCacheEntry> texture_cache;	// get the shared ptr reference count to determine when to delete (should be 1, as the map will be the only reference)
+	std::unordered_map<std::string, std::weak_ptr<sf::Texture>> texture_cache;	// get the shared ptr reference count to determine when to delete (should be 1, as the map will be the only reference)
 
 public:
 	// returns shared_ptr to texture loaded in memory (and loads texture into memory if not already present)
