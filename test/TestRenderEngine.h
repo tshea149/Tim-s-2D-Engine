@@ -6,12 +6,11 @@
 
 namespace TestRenderEngine
 {
-	RenderComponentHandle drawYellowSquare(sf::Vector2f location);
-	RenderComponentHandle drawRedSquare(sf::Vector2f location);
-	RenderComponentHandle drawBlueSquare(sf::Vector2f location);
+	std::shared_ptr<RenderComponent> drawYellowSquare(sf::Vector2f location);
+	std::shared_ptr<RenderComponent> drawRedSquare(sf::Vector2f location);
+	std::shared_ptr<RenderComponent> drawBlueSquare(sf::Vector2f location);
 
-	std::vector<RenderComponentHandle> randomSquaresTest(uint64_t seed, uint32_t num_squares);
-	void deallocateRenderComponents(std::vector<RenderComponentHandle> vec);
+	std::vector<std::shared_ptr<RenderComponent>> randomSquaresTest(uint64_t seed, uint32_t num_squares);
 }
 
 #endif

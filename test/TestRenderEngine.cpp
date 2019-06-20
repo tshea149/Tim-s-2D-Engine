@@ -10,34 +10,34 @@
 
 #include <vector>
 
-RenderComponentHandle TestRenderEngine::drawYellowSquare(sf::Vector2f location)
+std::shared_ptr<RenderComponent> TestRenderEngine::drawYellowSquare(sf::Vector2f location)
 {
-	RenderComponentHandle p = RenderEngine::getInstance()->createRenderComponent("textures/yellow_square.png", RenderLayer::C1, LayerPriority::LOW, true);
-	p.access()->setLocation(location);
+	std::shared_ptr<RenderComponent> p = RenderEngine::getInstance()->createRenderComponent("textures/yellow_square.png", RenderLayer::C1, LayerPriority::LOW, true);
+	p->setLocation(location);
 	return p;
 }
 
-RenderComponentHandle TestRenderEngine::drawRedSquare(sf::Vector2f location)
+std::shared_ptr<RenderComponent> TestRenderEngine::drawRedSquare(sf::Vector2f location)
 {
-	RenderComponentHandle p = RenderEngine::getInstance()->createRenderComponent("textures/red_square.png", RenderLayer::BG1, LayerPriority::MED, true);
-	p.access()->setLocation(location);
+	std::shared_ptr<RenderComponent> p = RenderEngine::getInstance()->createRenderComponent("textures/red_square.png", RenderLayer::BG1, LayerPriority::MED, true);
+	p->setLocation(location);
 	return p;
 }
 
-RenderComponentHandle TestRenderEngine::drawBlueSquare(sf::Vector2f location)
+std::shared_ptr<RenderComponent> TestRenderEngine::drawBlueSquare(sf::Vector2f location)
 {
-	RenderComponentHandle p = RenderEngine::getInstance()->createRenderComponent("textures/blue_square.png", RenderLayer::BG1, LayerPriority::LOW, true);
-	p.access()->setLocation(location);
+	std::shared_ptr<RenderComponent> p = RenderEngine::getInstance()->createRenderComponent("textures/blue_square.png", RenderLayer::BG1, LayerPriority::LOW, true);
+	p->setLocation(location);
 	return p;
 }
 
 // creates num_squares or RENDER_COMPONEN_MAX (whichever is smaller) number of RenderComponents and draws them to the screen at random positions.
 // returns a vector containing pointers to all created RenderComponenets
-std::vector<RenderComponentHandle>  TestRenderEngine::randomSquaresTest(uint64_t seed, uint32_t num_squares)
+std::vector<std::shared_ptr<RenderComponent>>  TestRenderEngine::randomSquaresTest(uint64_t seed, uint32_t num_squares)
 {
 	RandomNumberGenerator rng(seed);
-	RenderComponentHandle p;
-	std::vector<RenderComponentHandle> p_vec;
+	std::shared_ptr<RenderComponent> p;
+	std::vector<std::shared_ptr<RenderComponent>> p_vec;
 
 	for (size_t i = 0; i < num_squares; i++)
 	{
@@ -57,16 +57,10 @@ std::vector<RenderComponentHandle>  TestRenderEngine::randomSquaresTest(uint64_t
 			break;
 		}
 
-		if (true == p.isValid())
+		if (nullptr != p)
 			p_vec.push_back(p);
 	}
 	return p_vec;
-}
-
-void  TestRenderEngine::deallocateRenderComponents(std::vector<RenderComponentHandle> vec)
-{
-	for (std::vector<RenderComponentHandle>::iterator it = vec.begin(); it != vec.end(); ++it)
-		it->destroy();
 }
 
 #endif

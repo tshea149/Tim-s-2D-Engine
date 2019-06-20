@@ -8,15 +8,13 @@
 
 void Testing::RenderEngineTest1()
 {
-	std::vector<RenderComponentHandle> p_vec = TestRenderEngine::randomSquaresTest(2, 500);
+	std::vector<std::shared_ptr<RenderComponent>> p_vec = TestRenderEngine::randomSquaresTest(2, 500);
 	TestWindowManager::displayRenderComponents();
-	TestRenderEngine::deallocateRenderComponents(p_vec);
 }
 
 void Testing::RenderEngineTest2()
 {
-	std::vector<RenderComponentHandle> p_vec = TestRenderEngine::randomSquaresTest(2, 10);
-	TestRenderEngine::deallocateRenderComponents(p_vec);
+	std::vector<std::shared_ptr<RenderComponent>> p_vec = TestRenderEngine::randomSquaresTest(2, 10);
 	TestWindowManager::displayRenderComponents();
 }
 
