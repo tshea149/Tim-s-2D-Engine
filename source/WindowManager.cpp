@@ -1,6 +1,7 @@
 #include "WindowManager.h"
 
-static std::weak_ptr<WindowManager> instance;
+// defined singleton instance
+std::weak_ptr<WindowManager> WindowManager::instance;
 
 WindowManager::WindowManager()
 {

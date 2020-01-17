@@ -13,10 +13,13 @@
 class WindowManager
 {
 private:
-	WindowManager();
+	// declared singleton instance
+	static std::weak_ptr<WindowManager> instance;
 
 	sf::RenderWindow window;
 	std::string window_title = "Duct Tape and Diesel";	
+	
+	WindowManager();
 
 public:
 	static std::shared_ptr<WindowManager> getInstance();

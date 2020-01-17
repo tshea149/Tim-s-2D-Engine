@@ -1,7 +1,6 @@
 /* author: Tim */
 #include "RenderEngine.h"
 #include "AssetManager.h"
-#include "EngineSettings.h"	// for RENDER_COMPONENT_MAX
 
 #include <array>
 #include <memory>
@@ -12,19 +11,16 @@
 #include "Debug.h"
 #endif
 
-static std::weak_ptr<RenderEngine> instance;
+// define the singleton instance
+std::weak_ptr<RenderEngine> RenderEngine::instance;
 
 RenderEngine::RenderEngine()
-{
-	// top of the stack should begin with 0 and go to RENDER_COMPONENT_MAX
-	for (size_t i = RENDER_COMPONENT_MAX - 1; i != size_t(-1) ; --i)
-		this->available_component_indexes.push(i);
+{	// "the default constructor of 'std::array<'.... error is an intellisense bug, can be ignored"
+	static_assert(RENDER_COMPONENT_POOL_SIZE <= (size_t)(-1), "RENDER_COMPONENT_POOL_SIZE cannot exceed the maximum value for a size_t.");
 
-	// important use of resize vs reserve here
-	//	\ resize allocates space and populates the vector, important for the component_pool as we are indexing into it
-	//	\ reserve allocates space but does not add values to the vector, important so that we do not draw indexes that we do not want
-	component_pool.resize(RENDER_COMPONENT_RESERVE, RenderComponent());
-	component_draw_order.reserve(RENDER_COMPONENT_RESERVE);
+	// top of the stack should begin with 0 and go to RENDER_COMPONENT_MAX
+	for (size_t i = RENDER_COMPONENT_POOL_SIZE - 1; i != size_t(-1) ; --i)
+		this->available_component_indexes.push(i);
 }
 
 size_t RenderEngine::computeComponentIndex(const RenderComponent* const p_rc)
@@ -126,30 +122,6 @@ void RenderEngine::setRenderTarget(sf::RenderTarget* render_target)
 	this->render_target = render_target;
 }
 
-// when component_pool is resized, the component_draw_order vector needs to have all pointers updated to point to the new RenderComponent memory locations
-// if the component_draw_order held indexes instead of pointers, this would be unnecessary.
-// \ however, resizing the component pool should be a rare occurance
-void RenderEngine::resizeComponentPool(size_t new_size)
-{
-	// store the beginning address of the component_pool before it gets moved. Will be used in computing new pointers.
-	RenderComponent* old_cp_begin = &component_pool[0];
-
-	// perform component_pool resize operation. This will move the vector in memory, making all RenderComponent* in component_draw_order invalid
-	component_pool.resize(new_size, RenderComponent());
-
-	// iterate over draw order, convert existing invalid address into new valid address
-	// \ compute index using pointer - pointer of element 0
-	//  \ use index to get new pointer from component_pool
-	for (std::vector<RenderComponent*>::iterator iter = component_draw_order.begin(); iter != component_draw_order.end(); ++iter)
-	{
-		// index = (pointer to RenderComponent (stored in component_draw_order)) - (pointer to first RenderComponent in component_pool)
-		size_t index = *iter - old_cp_begin;
-
-		// replace invalid pointer with new valid pointer
-		*iter = &component_pool[index];
-	}
-}
-
 std::shared_ptr<RenderComponent> RenderEngine::createRenderComponent(std::string texture_filepath, RenderLayer render_layer, LayerPriority layer_priority, bool isVisible)
 {
 	// check if there is space for a RenderComponent
@@ -163,9 +135,6 @@ std::shared_ptr<RenderComponent> RenderEngine::createRenderComponent(std::string
 
 	// get first available component index and remove from stack
 	size_t index = available_component_indexes.top();
-
-	if (index + 1 > component_pool.size())	// max index is size - 1, have to add 1 to account for that in this comparison
-		resizeComponentPool(component_pool.size() * 2);
 
 	// RenderComponent ready to be created
 	component_pool[index] = RenderComponent(render_layer, layer_priority, isVisible);

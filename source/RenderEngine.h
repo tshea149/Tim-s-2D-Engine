@@ -5,7 +5,9 @@
 
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "RenderComponent.h"
+#include "EngineSettings.h"
 
+#include <array>
 #include <vector>
 #include <stack>
 #include <string>
@@ -17,11 +19,15 @@
 class RenderEngine
 {
 private:
+
+	// declared singleton instance
+	static std::weak_ptr<RenderEngine> instance;
+
 	sf::RenderTarget* render_target;
 
-	std::stack<size_t> available_component_indexes;
+	std::stack<uint32_t> available_component_indexes;
 	// stores all render_components. Sort by component's layer then layer_priority to determine draw order.
-	std::vector<RenderComponent> component_pool;
+	std::array<RenderComponent, RENDER_COMPONENT_POOL_SIZE> component_pool {} ;	// use of initializer to create array of RenderComponents because RenderComponent's constructor is private.
 	std::vector<RenderComponent*> component_draw_order;
 
 	// function object to use as custom deletor for weak_ptr<sf::Texture> in TextureCacheEntry
@@ -46,8 +52,6 @@ private:
 	bool RenderEngine::forwardLinearComponentDrawRemoval(std::vector<RenderComponent*>::iterator const it, RenderComponent* const p_rc, int comp_val);
 	bool RenderEngine::backwardsLinearComponentDrawRemoval(std::vector<RenderComponent*>::iterator const it, RenderComponent* const p_rc, int comp_val);
 	bool RenderEngine::removeComponentFromDrawOrder(RenderComponent* const p_rc);
-
-	void RenderEngine::resizeComponentPool(size_t new_size);
 
 	void drawComponents();
 
